@@ -1,0 +1,26 @@
+{
+  "name": "ding_dong",
+  "version": "1.0.0",
+  "description": "A facial recognition api to tell you who's been at your house",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mchaynes/DingDong.git"
+  },
+  "keywords": [
+    "Facial",
+    "Recognition",
+    "API",
+    "Ding",
+    "Dong"
+  ],
+  "author": "Myles",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mchaynes/DingDong/issues"
+  },
+  "homepage": "https://github.com/mchaynes/DingDong#readme"
+}
