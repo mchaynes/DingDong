@@ -42,6 +42,9 @@ app.get('/api/whowas', function(req, res) {
       }
     }
     res.send(people);
+  }).catch((err) => {
+    console.log(err);
+    res.sendStatus(502);
   });
 });
 
@@ -93,7 +96,9 @@ app.get('/api/package', function(req, res) {
         function(err) {
           res.send(err);
         }
-      );
+      ).catch((err) => {
+        res.send(err);
+      });
   });
 });
 
@@ -116,6 +121,7 @@ app.post('/api/add',function(req, res) {
   var name = req.body.name;
   takePicture((url) => {
     addPerson(name, url, (data) => {
+      console.log(data);
       res.sendStatus(data);
     })
   });
@@ -132,15 +138,20 @@ function getNewPicture() {
       }).catch((err) => {
         takePicture((url) => {
           addPerson(null, url, (data) => {
+            console.log(data);
           })
         });
       })
   });
 }
-setInterval(getNewPicture, 60000);
+setInterval(getNewPicture, 30000);
 
 function addPerson(name, imagePath, callback) {
   visionClient.vision.analyzeImage({url: imagePath, Description: true}).then((data) => {
+    if (!~data.description.tags.indexOf('person')) {
+      callback(400);
+      return;
+    }
     name = name || data.description.captions[0].text;
     client.face.person.create(personGroup, name, JSON.stringify(new Date().getTime())).then(response => {
       client.face.person.addFace(personGroup, response.personId, {url:imagePath}).then(response => {
@@ -155,8 +166,12 @@ function addPerson(name, imagePath, callback) {
         console.log(err);
         callback(400);
       });
+  }).catch((err) => {
+    console.log(err);
+    callback(400)
   });
   }).catch((err) => {
+    console.log(err);
     callback(400);
   });
 }
