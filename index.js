@@ -64,7 +64,11 @@ app.post('/api/add',function(req, res) {
 function getNewPicture() {
   function update(err, data) {
     if(data) {
-      client.face.person.update(data, new Date().getTime());
+      client.face.person.update(data, new Date().getTime()).then(response => {
+        console.log(response);
+      }).catch(err => {
+        console.log(err);
+      })
     }
   }
   whoIs(update);
