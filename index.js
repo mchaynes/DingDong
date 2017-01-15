@@ -48,8 +48,7 @@ app.post('/api/add',function(req, res) {
   function addPerson(imagePath) {
     client.face.person.create(personGroup, name, JSON.stringify('[' + new Date().getTime() + ']')).then(response => {
         client.face.person.addFace(personGroup, response.personId, {url:imagePath}).then(response => {
-          console.log("IT ACTUALLY WORKED");
-          console.log(response);
+          client.face.personGroup.trainStart(personGroup);
           res.sendStatus(200);
         }).catch(err => {
           console.log("FAILED");
