@@ -42,7 +42,6 @@ app.post('/api/whenwas', function(req, res) {
 
 app.post('/api/add',function(req, res) {
   var image_path;
-  //LOOK AT THIS IAN. MAKE SURE YOU FUCKING REQUEST CORRECTLY.
   var name = req.body.name;
   takePicture(addPerson);
   function addPerson(imagePath) {
@@ -63,11 +62,15 @@ app.post('/api/add',function(req, res) {
   }
 });
 function getNewPicture() {
-  takePicture(function(response) {
-    
-  });
+  function update(err, data) {
+    if(data) {
+      client.face.person.update(data, new Date().getTime());
+    }
+  }
+  whoIs(update);
+
 }
-// setInterval(getNewPicture, 10000);
+setInterval(getNewPicture, 10000);
 
 function takePicture(callback) {
   var child = exec('java -cp ./src/java/ CamWork', {cwd: './'}, function(err, stdout, stderr) {
@@ -78,15 +81,21 @@ function takePicture(callback) {
 function whoIs(callback) {
   takePicture((result) => {
     client.face.detect({url: result, returnFaceId: true}).then((data) => {
+      if(data[0]) {
       client.face.identify([data[0].faceId], personGroup, 1).then((data) => {
         var match = data[0].candidates[0].personId;
         callback(null, match);
       }).catch((err) => {
         callback(err.message, null);
       });
-    }).catch((err) => {
+    } else {
+      callback("no face detected", null);
+    }
+
+  ).catch((err) => {
       callback(err.message, null);
     });
+
   });
 }
 app.listen(process.env.PORT || 8000);
