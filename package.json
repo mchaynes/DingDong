@@ -22,5 +22,8 @@
   "bugs": {
     "url": "https://github.com/mchaynes/DingDong/issues"
   },
-  "homepage": "https://github.com/mchaynes/DingDong#readme"
+  "homepage": "https://github.com/mchaynes/DingDong#readme",
+  "dependencies": {
+    "project-oxford": "^1.7.0"
+  }
 }
