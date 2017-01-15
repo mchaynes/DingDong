@@ -127,6 +127,13 @@ app.post('/api/add',function(req, res) {
   });
 });
 
+app.post('/api/update', function(req, res) {
+  var name = req.body.name;
+  updatePerson(name, (data)=> {
+    res.send(data);
+  })
+});
+
 function getNewPicture() {
   whoIs(function(err, data) {
       client.face.person.get(personGroup, data).then(person => {
@@ -146,6 +153,23 @@ function getNewPicture() {
 }
 setInterval(getNewPicture, 60000);
 
+function updatePerson(name, callback) {
+  whoIs(function(err, data) {
+      client.face.person.get(personGroup, data).then(person => {
+        client.face.person.update(personGroup, person.personId, name, JSON.stringify(new Date().getTime())).then(response => {
+          callback(name + ' successfuly updated');
+        }).catch(err => {
+          callback(err);
+        })
+      }).catch((err) => {
+        takePicture((url) => {
+          addPerson(null, url, (data) => {
+            callback(name + ' successfuly added');
+          })
+        });
+      })
+  });
+}
 function addPerson(name, imagePath, callback) {
   visionClient.vision.analyzeImage({url: imagePath, Description: true}).then((data) => {
     if (!~data.description.tags.indexOf('person')) {
