@@ -25,8 +25,14 @@ app.get('/api/whowas', function(req, res) {
 app.get('/api/whois', function(req, res) {
   takePicture((result) => {
     client.face.detect({url: result, returnFaceId: true}).then((data) => {
-      client.face.identify([data[0].faceId], personGroup, 5).then((data) => {
-        res.send(data);
+      client.face.identify([data[0].faceId], personGroup, 1).then((data) => {
+        var match = data[0].candidates[0].personId;
+        client.face.person.get(personGroup, match).then((response) => {
+          res.send('A match for ' + response.name + ' has been found');
+        }).catch((err) => {
+          res.send(err.message);
+        });
+
       }).catch((err) => {
         res.send(err.message);
       });
@@ -48,13 +54,15 @@ app.post('/api/add',function(req, res) {
   function addPerson(imagePath) {
     client.face.person.create(personGroup, name, JSON.stringify('[' + new Date().getTime() + ']')).then(response => {
         client.face.person.addFace(personGroup, response.personId, {url:imagePath}).then(response => {
-          client.face.personGroup.trainStart(personGroup);
-          res.sendStatus(200);
+          client.face.personGroup.trainingStart(personGroup).then(() => {
+            res.sendStatus(200);
+          }).catch((err) => {
+            console.log(err);
+          });
         }).catch(err => {
           console.log("FAILED");
-          res.sendStatus(400);
-          res.send(err);
           console.log(err);
+          res.sendStatus(400);
         });
 
     });
