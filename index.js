@@ -32,7 +32,7 @@ app.get('/api/whowas', function(req, res) {
       if(listDate.toDateString() === new Date().toDateString()) {
         var time;
         if(listDate.getHours() > 12) {
-          time = (listDate.getHours() - 12) + ':'+ ((listDate.getMinutes() > 10) ? listDate.getMinutes() : "0" + listDate.getMinutes()) + 'PM'
+          time = (listDate.getHours() - 12) + 'd:'+ ((listDate.getMinutes() > 10) ? listDate.getMinutes() : "0" + listDate.getMinutes()) + 'PM'
         } else if(listDate.getHours() === 0) {
           time = 12 + ':' + ((listDate.getMinutes() > 10) ? listDate.getMinutes() : "0" + listDate.getMinutes()) + 'AM';
         } else {
@@ -133,16 +133,18 @@ app.post('/api/add',function(req, res) {
   }
 });
 function getNewPicture() {
-  function update(err, data) {
+  whoIs(function(err, data) {
     if(data) {
-      client.face.person.update(data, new Date().getTime()).then(response => {
-        console.log(response);
-      }).catch(err => {
-        console.log(err);
+      client.face.person.get(personGroup, data).then(person => {
+        client.face.person.update(personGroup, person.personId, person.name, JSON.stringify(new Date().getTime())).then(response => {
+          console.log(response);
+        }).catch(err => {
+          console.log(err);
+        })
       })
     }
-  }
-  whoIs(update);
+
+  });
 }
 setInterval(getNewPicture, 600000);
 
