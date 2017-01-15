@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "start": "javac src/java/CamWork.java -cp src/java && node index.js"
   },
   "repository": {
     "type": "git",

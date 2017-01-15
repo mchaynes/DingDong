@@ -13,27 +13,14 @@ import com.github.sarxos.webcam.Webcam;
 public class CamWork {
 
     public static void main(String[] args) throws IOException {
-
-        // get default webcam and open it
-        setResolution();
-        Webcam webcam = Webcam.getDefault();
-        webcam.open();
-
-        // get image
-
-        BufferedImage image = webcam.getImage();
-
-        // save image to PNG file
-        String fileName = "../../public/" + System.getTimeMillis() + ".jpg";
-        ImageIO.write(image, "JPG", fileName));
-        System.out.println(fileName);
+        savePicture();
     }
 
-    public static void setResolution() throws IOException {
+    public static void savePicture() throws IOException {
         Webcam webcam = Webcam.getDefault();
         webcam.setViewSize(new Dimension(640, 480));
         webcam.open();
-        ImageIO.write(webcam.getImage(), "JPG", new File("test.JPG"));
+        ImageIO.write(webcam.getImage(), "JPG", new File("public/" + System.currentTimeMillis() + ".jpg"));
         webcam.close();
     }
 }
