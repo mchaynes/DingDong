@@ -6,16 +6,21 @@ var faceListID = 'list';
 var personGroup = 'person_group'
 
 
-name = 'in';
-client.face.person.list(personGroup).then((response) => {
-  response.map(x=> {
-    console.log(x);
-    // client.face.person.delete(personGroup, x.personId).then(res => {
-    //   console.log(res)
-    // }).catch(err => {
-    //   console.log(err);
-    // })
-  });
-}).catch(err => {
-  console.log(err);
-});
+// name = 'in';
+// client.face.person.list(personGroup).then((response) => {
+//   response.map(x=> {
+//     console.log(x);
+//     client.face.person.delete(personGroup, x.personId).then(res => {
+//       console.log(res)
+//     }).catch(err => {
+//       console.log(err);
+//     });
+//   });
+// }).catch(err => {
+//   console.log(err);
+// });
+
+
+client.face.personGroup.trainingStatus(personGroup).then(response => {
+  console.log(response);
+})
