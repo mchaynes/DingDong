@@ -28,7 +28,7 @@ app.get('/api/whowas', function(req, res) {
   var people = []
   client.face.person.list(personGroup).then(response => {
     for(i in response) {
-      var listDate = new Date(response[i].userData);
+      var listDate = new Date(parseInt(response[i].userData));
       if(listDate.toDateString() === new Date().toDateString()) {
         people.push(response[i].name);
       }
