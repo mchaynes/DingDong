@@ -25,12 +25,20 @@ app.use(bodyParser());
 app.use(express.static('public'));
 
 app.get('/api/whowas', function(req, res) {
-  var people = []
+  var people = [];
   client.face.person.list(personGroup).then(response => {
     for(i in response) {
       var listDate = new Date(parseInt(response[i].userData));
       if(listDate.toDateString() === new Date().toDateString()) {
-        people.push(response[i].name);
+        var time;
+        if(listDate.getHour() > 12) {
+          time = (listDate.getHour() - 12) + ':'+ listDate.getMinutes() + 'PM'
+        } else if(listDate.getHour() === 0) {
+          time = 12 + ':' + listDate.getMinutes() + 'AM';
+        } else {
+          time = listDate.getHour() + ':'+ listDate.getMinutes() + 'AM'
+        }
+        people.push({'name':response[i].name, 'time':time});
       }
     }
     res.send(people);
