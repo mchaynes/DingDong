@@ -35,13 +35,19 @@ app.post('/api/add',function(req, res) {
   var image_path;
   //LOOK AT THIS IAN. MAKE SURE YOU FUCKING REQUEST CORRECTLY.
   var name = req.body.name;
-  function addPerson(image_path) {
+  takePicture(addPerson);
+  function addPerson(imagePath) {
     client.face.person.create(personGroup, name, Date.now()).then(response => {
-      client.face.person.addFace(groupID, response.personId, {path:image_path}).then(addedFace => {
-      });
+        client.face.person.addFace(groupID, response.personId, {url:imagePath}).then(response => {
+          console.log("SHIT ACTUALLY WORKED");
+          console.log(response);
+        }).catch(err => {
+          console.log("FUCK FUCK FUCK FUCK");
+          console.log(err);
+        });
+
     });
   }
-  takePicture(addPerson);
 });
 
 function takePicture(callback) {
