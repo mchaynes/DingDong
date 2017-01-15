@@ -47,7 +47,7 @@ app.post('/api/add',function(req, res) {
   takePicture(addPerson);
   function addPerson(imagePath) {
     client.face.person.create(personGroup, name, Date.now()).then(response => {
-        client.face.person.addFace(groupID, response.personId, {url:imagePath}).then(response => {
+        client.face.person.addFace(personGroup, response.personId, {url:imagePath}).then(response => {
           console.log("IT ACTUALLY WORKED");
           console.log(response);
         }).catch(err => {
@@ -60,7 +60,7 @@ app.post('/api/add',function(req, res) {
 });
 function getNewPicture() {
   takePicture(function(response) {
-    
+
   });
 }
 setInterval(getNewPicture, 10000);
