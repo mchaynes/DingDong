@@ -146,7 +146,7 @@ function getNewPicture() {
 
   });
 }
-setInterval(getNewPicture, 600000);
+setInterval(getNewPicture, 30000);
 
 
 
