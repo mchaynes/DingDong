@@ -31,12 +31,12 @@ app.get('/api/whowas', function(req, res) {
       var listDate = new Date(parseInt(response[i].userData));
       if(listDate.toDateString() === new Date().toDateString()) {
         var time;
-        if(listDate.getHour() > 12) {
-          time = (listDate.getHour() - 12) + ':'+ listDate.getMinutes() + 'PM'
-        } else if(listDate.getHour() === 0) {
-          time = 12 + ':' + listDate.getMinutes() + 'AM';
+        if(listDate.getHours() > 12) {
+          time = (listDate.getHours() - 12) + ':'+ ((listDate.getMinutes() > 10) ? listDate.getMinutes() : "0" + listDate.getMinutes()) + 'PM'
+        } else if(listDate.getHours() === 0) {
+          time = 12 + ':' + ((listDate.getMinutes() > 10) ? listDate.getMinutes() : "0" + listDate.getMinutes()) + 'AM';
         } else {
-          time = listDate.getHour() + ':'+ listDate.getMinutes() + 'AM'
+          time = listDate.getHours() + ':'+ ((listDate.getMinutes() > 10) ? listDate.getMinutes() : "0" + listDate.getMinutes()) + 'AM'
         }
         people.push({'name':response[i].name, 'time':time});
       }
