@@ -11,6 +11,7 @@ var exec = require('child_process').exec;
 var oxford = require('project-oxford');
 client = new oxford.Client('f4d97dc46d7644f8ab6c401711ac5287'); //String is API Key
 var app = express();
+var SITE_URL = "http://dingdong.localtunnel.me/";
 
 var faceListID = 'list';
 var personGroup = 'person_group'
@@ -22,8 +23,17 @@ app.get('/api/whowas', function(req, res) {
 
 app.get('/api/whois', function(req, res) {
   takePicture((result) => {
-    console.log(client.face.similar);
-    res.send(result);
+    client.face.detect({url: result, returnFaceId: true}).then((data) => {
+      client.face.identify([data[0].faceId], personGroup, 5).then((data) => {
+        console.log(data);
+        res.send(data);
+      }).catch((err) => {
+        res.send(err);
+        console.log(err);
+      });
+    }).catch((err) => {
+      res.send(err);
+    });
   });
 });
 
@@ -52,7 +62,7 @@ app.post('/api/add',function(req, res) {
 
 function takePicture(callback) {
   var child = exec('java -cp ./src/java/ CamWork', {cwd: './'}, function(err, stdout, stderr) {
-    callback(stdout);
+    callback(SITE_URL + stdout);
   });
 }
 
