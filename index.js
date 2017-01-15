@@ -114,40 +114,52 @@ app.post('/api/whenwas', function(req, res) {
 app.post('/api/add',function(req, res) {
   var image_path;
   var name = req.body.name;
-  takePicture(addPerson);
-  function addPerson(imagePath) {
-    client.face.person.create(personGroup, name, JSON.stringify(new Date().getTime())).then(response => {
-        client.face.person.addFace(personGroup, response.personId, {url:imagePath}).then(response => {
-          client.face.personGroup.trainingStart(personGroup).then(() => {
-            res.sendStatus(200);
-          }).catch((err) => {
-            console.log(err);
-          });
-        }).catch(err => {
-          console.log("FAILED");
-          console.log(err);
-          res.sendStatus(400);
-        });
-
-    });
-  }
+  takePicture((url) => {
+    addPerson(name, url, (data) => {
+      res.sendStatus(data);
+    })
+  });
 });
+
 function getNewPicture() {
   whoIs(function(err, data) {
-    if(data) {
       client.face.person.get(personGroup, data).then(person => {
         client.face.person.update(personGroup, person.personId, person.name, JSON.stringify(new Date().getTime())).then(response => {
           console.log(response);
         }).catch(err => {
           console.log(err);
         })
+      }).catch((err) => {
+        takePicture((url) => {
+          addPerson(null, url, (data) => {
+          })
+        });
       })
-    }
-
   });
 }
-setInterval(getNewPicture, 30000);
+setInterval(getNewPicture, 60000);
 
+function addPerson(name, imagePath, callback) {
+  visionClient.vision.analyzeImage({url: imagePath, Description: true}).then((data) => {
+    name = name || data.description.captions[0].text;
+    client.face.person.create(personGroup, name, JSON.stringify(new Date().getTime())).then(response => {
+      client.face.person.addFace(personGroup, response.personId, {url:imagePath}).then(response => {
+        client.face.personGroup.trainingStart(personGroup).then(() => {
+          callback(200)
+        }).catch((err) => {
+          console.log(err);
+          callback(400)
+        });
+      }).catch(err => {
+        console.log("FAILED");
+        console.log(err);
+        callback(400);
+      });
+  });
+  }).catch((err) => {
+    callback(400);
+  });
+}
 
 
 function takePicture(callback) {
