@@ -23,23 +23,17 @@ app.get('/api/whowas', function(req, res) {
 });
 
 app.get('/api/whois', function(req, res) {
-  takePicture((result) => {
-    client.face.detect({url: result, returnFaceId: true}).then((data) => {
-      client.face.identify([data[0].faceId], personGroup, 1).then((data) => {
-        var match = data[0].candidates[0].personId;
-        client.face.person.get(personGroup, match).then((response) => {
-          res.send('A match for ' + response.name + ' has been found');
-        }).catch((err) => {
-          res.send(err.message);
-        });
-
-      }).catch((err) => {
-        res.send(err.message);
-      });
+  whoIs((err, match) => {
+    if (err) {
+      res.send(err);
+      return;
+    }
+    client.face.person.get(personGroup, match).then((response) => {
+      res.send('A match for ' + response.name + ' has been found');
     }).catch((err) => {
       res.send(err.message);
     });
-  });
+  })
 });
 
 app.post('/api/whenwas', function(req, res) {
@@ -81,4 +75,18 @@ function takePicture(callback) {
   });
 }
 
+function whoIs(callback) {
+  takePicture((result) => {
+    client.face.detect({url: result, returnFaceId: true}).then((data) => {
+      client.face.identify([data[0].faceId], personGroup, 1).then((data) => {
+        var match = data[0].candidates[0].personId;
+        callback(null, match);
+      }).catch((err) => {
+        callback(err.message, null);
+      });
+    }).catch((err) => {
+      callback(err.message, null);
+    });
+  });
+}
 app.listen(process.env.PORT || 8000);
