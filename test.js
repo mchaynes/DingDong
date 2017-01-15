@@ -8,10 +8,14 @@ var personGroup = 'person_group'
 
 name = 'in';
 client.face.person.list(personGroup).then((response) => {
-  for(i in response) {
-    console.log(response[i].name + "      " + response[i].userData);
-    client.face.person.update(personGroup, response[i].personId, response[i].name, "TEST!");
-  }
+  response.map(x=> {
+    console.log(x);
+    // client.face.person.delete(personGroup, x.personId).then(res => {
+    //   console.log(res)
+    // }).catch(err => {
+    //   console.log(err);
+    // })
+  });
 }).catch(err => {
   console.log(err);
 });

@@ -127,7 +127,7 @@ function getNewPicture() {
   }
   whoIs(update);
 }
-// setInterval(getNewPicture, 300000);
+setInterval(getNewPicture, 600000);
 
 
 
