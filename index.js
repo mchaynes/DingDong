@@ -26,14 +26,12 @@ app.get('/api/whois', function(req, res) {
   takePicture((result) => {
     client.face.detect({url: result, returnFaceId: true}).then((data) => {
       client.face.identify([data[0].faceId], personGroup, 5).then((data) => {
-        console.log(data);
         res.send(data);
       }).catch((err) => {
-        res.send(err);
-        console.log(err);
+        res.send(err.message);
       });
     }).catch((err) => {
-      res.send(err);
+      res.send(err.message);
     });
   });
 });
