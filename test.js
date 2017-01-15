@@ -7,6 +7,7 @@ var personGroup = 'person_group'
 takePicture(addPerson);
 function addPerson(imagePath) {
   client.face.person.create(personGroup, 'name', Date.now()).then(response => {
+      console.log(response);
       client.face.person.addFace(personGroup, response.personId, {path:imagePath}).then(response => {
         console.log("SHIT ACTUALLY WORKED");
         console.log(response);
