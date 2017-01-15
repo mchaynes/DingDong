@@ -47,11 +47,14 @@ app.post('/api/add',function(req, res) {
   takePicture(addPerson);
   function addPerson(imagePath) {
     client.face.person.create(personGroup, name, Date.now()).then(response => {
-        client.face.person.addFace(groupID, response.personId, {url:imagePath}).then(response => {
+        client.face.person.addFace(personGroup, response.personId, {url:imagePath}).then(response => {
           console.log("IT ACTUALLY WORKED");
           console.log(response);
+          res.sendStatus(200);
         }).catch(err => {
           console.log("FAILED");
+          res.sendStatus(400);
+          res.send(err);
           console.log(err);
         });
 
@@ -60,10 +63,10 @@ app.post('/api/add',function(req, res) {
 });
 function getNewPicture() {
   takePicture(function(response) {
-    
+
   });
 }
-setInterval(getNewPicture, 10000);
+// setInterval(getNewPicture, 10000);
 
 function takePicture(callback) {
   var child = exec('java -cp ./src/java/ CamWork', {cwd: './'}, function(err, stdout, stderr) {
