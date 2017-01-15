@@ -142,6 +142,15 @@ function getNewPicture() {
         }).catch(err => {
           console.log(err);
         })
+<<<<<<< HEAD
+      }).catch(err => {
+        console.log(err);
+      })
+    } else {
+      
+    }
+
+=======
       }).catch((err) => {
         takePicture((url) => {
           addPerson(null, url, (data) => {
@@ -149,6 +158,7 @@ function getNewPicture() {
           })
         });
       })
+>>>>>>> fe8c7e3766d4cf353d3f70946ef5eba8bcc1e9ee
   });
 }
 setInterval(getNewPicture, 60000);

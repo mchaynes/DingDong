@@ -14,8 +14,13 @@ client.face.person.list(personGroup).then((response) => {
     //   console.log(res)
     // }).catch(err => {
     //   console.log(err);
-    // })
+    // });
   });
 }).catch(err => {
   console.log(err);
 });
+
+
+client.face.personGroup.trainingStatus(personGroup).then(response => {
+  console.log(response);
+})
