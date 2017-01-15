@@ -10,6 +10,7 @@ var exec = require('child_process').exec;
 //Connects to Oxford API
 var oxford = require('project-oxford');
 client = new oxford.Client('f4d97dc46d7644f8ab6c401711ac5287'); //String is API Key
+visionClient = new oxford.Client('23785433bd9442c892727726231933e7');
 var app = express();
 var SITE_URL = "http://dingdong.localtunnel.me/";
 
@@ -34,6 +35,20 @@ app.get('/api/whois', function(req, res) {
       res.send(err.message);
     });
   })
+});
+
+app.get('/api/what', function(req, res) {
+  takePicture(function (response) {
+    visionClient.vision.analyzeImage({url: response, Description: true}).then((data) => {
+      var spokenResponse = "I see: " + data.description.captions[0].text + ". I also see the following tags: "
+      for (var i = 0; i < 5; i++) {
+        spokenResponse += data.description.tags[i] + ", ";
+      }
+      res.send(spokenResponse);
+    }).catch((err) => {
+      res.send(err);
+    });
+  });
 });
 
 app.post('/api/whenwas', function(req, res) {
@@ -64,7 +79,7 @@ app.post('/api/add',function(req, res) {
 });
 function getNewPicture() {
   takePicture(function(response) {
-    
+
   });
 }
 // setInterval(getNewPicture, 10000);
