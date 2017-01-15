@@ -62,7 +62,7 @@ app.post('/api/add',function(req, res) {
 });
 function getNewPicture() {
   takePicture(function(response) {
-
+    
   });
 }
 // setInterval(getNewPicture, 10000);
