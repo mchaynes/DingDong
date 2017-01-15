@@ -40,7 +40,7 @@ app.get('/api/whois', function(req, res) {
 app.get('/api/what', function(req, res) {
   takePicture(function (response) {
     visionClient.vision.analyzeImage({url: response, Description: true}).then((data) => {
-      var spokenResponse = "I see: " + data.description.captions[0].text + ". I also see the following tags: "
+      var spokenResponse = "I see " + data.description.captions[0].text + ". I also see the following tags: "
       for (var i = 0; i < 5; i++) {
         spokenResponse += data.description.tags[i] + ", ";
       }
@@ -96,16 +96,16 @@ function whoIs(callback) {
   takePicture((result) => {
     client.face.detect({url: result, returnFaceId: true}).then((data) => {
       if(data[0]) {
-      client.face.identify([data[0].faceId], personGroup, 1).then((data) => {
-        var match = data[0].candidates[0].personId;
-        callback(null, match);
-      }).catch((err) => {
-        callback(err.message, null);
-      });
-    } else {
-      callback("no face detected", null);
+        client.face.identify([data[0].faceId], personGroup, 1).then((data) => {
+          var match = data[0].candidates[0].personId;
+          callback(null, match);
+        }).catch((err) => {
+          callback(err.message, null);
+        });
+      } else {
+        callback("no face detected", null);
+      }
     }
-
   ).catch((err) => {
       callback(err.message, null);
     });
