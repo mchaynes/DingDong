@@ -10,6 +10,7 @@ var exec = require('child_process').exec;
 //Connects to Oxford API
 var oxford = require('project-oxford');
 client = new oxford.Client('f4d97dc46d7644f8ab6c401711ac5287'); //String is API Key
+visionClient = new oxford.Client('23785433bd9442c892727726231933e7');
 var app = express();
 var SITE_URL = "http://dingdong.localtunnel.me/";
 
@@ -34,6 +35,20 @@ app.get('/api/whois', function(req, res) {
       res.send(err.message);
     });
   })
+});
+
+app.get('/api/what', function(req, res) {
+  takePicture(function (response) {
+    visionClient.vision.analyzeImage({url: response, Description: true}).then((data) => {
+      var spokenResponse = "I see " + data.description.captions[0].text + ". I also see the following tags: "
+      for (var i = 0; i < 5; i++) {
+        spokenResponse += data.description.tags[i] + ", ";
+      }
+      res.send(spokenResponse);
+    }).catch((err) => {
+      res.send(err);
+    });
+  });
 });
 
 app.post('/api/whenwas', function(req, res) {
@@ -72,7 +87,6 @@ function getNewPicture() {
     }
   }
   whoIs(update);
-
 }
 setInterval(getNewPicture, 10000);
 
@@ -86,16 +100,16 @@ function whoIs(callback) {
   takePicture((result) => {
     client.face.detect({url: result, returnFaceId: true}).then((data) => {
       if(data[0]) {
-      client.face.identify([data[0].faceId], personGroup, 1).then((data) => {
-        var match = data[0].candidates[0].personId;
-        callback(null, match);
-      }).catch((err) => {
-        callback(err.message, null);
-      });
-    } else {
-      callback("no face detected", null);
+        client.face.identify([data[0].faceId], personGroup, 1).then((data) => {
+          var match = data[0].candidates[0].personId;
+          callback(null, match);
+        }).catch((err) => {
+          callback(err.message, null);
+        });
+      } else {
+        callback("no face detected", null);
+      }
     }
-
   ).catch((err) => {
       callback(err.message, null);
     });
