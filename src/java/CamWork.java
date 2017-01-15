@@ -24,7 +24,9 @@ public class CamWork {
         BufferedImage image = webcam.getImage();
 
         // save image to PNG file
-        ImageIO.write(image, "JPG", new File("test.JPG"));
+        String fileName = "../../public/" + System.getTimeMillis() + ".jpg";
+        ImageIO.write(image, "JPG", fileName));
+        System.out.println(fileName);
     }
 
     public static void setResolution() throws IOException {

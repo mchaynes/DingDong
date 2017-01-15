@@ -23,7 +23,10 @@ app.post('/api/whenwas', function(req, res) {
 });
 
 app.post('/api/add',function(req, res) {
-
+  var exec = require('child_process').exec;
+  var child = exec('java -cp ./src/java/CamWork', {cwd: './'}, function(err, stdout, stderr) {
+    var result = stdout;
+  });
 })
 
 
