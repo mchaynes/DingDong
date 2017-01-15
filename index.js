@@ -84,13 +84,13 @@ app.post('/api/whenwas', function(req, res) {
   name = req.body.name;
   client.face.person.list(personGroup).then((response) => {
     for(i in response) {
-      if(response[0].name == name || (name == 'Ian' && response[0].name == 'Tits')) {
-        var date = Date.parse(response[0].userData);
-        res.send(date+'');
+      if(response[0].name == name || (name == 'Ian' && response[0].name == 'in')) {
+        var date = new Date(parseInt(response[0].userData));
+        res.send(date.toDateString());
         return;
       }
     }
-    res.send('Person not found');
+    res.send('never');
   })
 });
 
