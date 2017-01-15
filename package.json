@@ -27,6 +27,7 @@
   "homepage": "https://github.com/mchaynes/DingDong#readme",
   "dependencies": {
     "body-parser": "^1.15.2",
+    "clarifai": "^2.1.0-dev",
     "express": "^4.14.0",
     "fs-extra": "^1.0.0",
     "project-oxford": "^1.7.0"

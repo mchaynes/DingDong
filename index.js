@@ -12,6 +12,11 @@ var oxford = require('project-oxford');
 client = new oxford.Client('f4d97dc46d7644f8ab6c401711ac5287'); //String is API Key
 visionClient = new oxford.Client('23785433bd9442c892727726231933e7');
 var app = express();
+var Clarifai = require('clarifai');
+var clApp = new Clarifai.App(
+  'qoguCr9rhUSI1K_o9E7wQtvBTPp2lAnKK_6pfi8I',
+  'xj_Oc04TynR_AbDbmJqEaLklQGGfXjEEuNQ4_mxG'
+);
 var SITE_URL = "http://dingdong.localtunnel.me/";
 
 var faceListID = 'list';
@@ -51,6 +56,26 @@ app.get('/api/what', function(req, res) {
   });
 });
 
+app.get('/api/package', function(req, res) {
+  takePicture(function(response) {
+    clApp.models.predict(Clarifai.GENERAL_MODEL, response.trim()).then(
+        function(response) {
+          var responseData = response.outputs[0].data.concepts;
+          for (var i in responseData) {
+            if (responseData[i].name === 'box' || responseData[i].name === 'package') {
+              res.send('Your package is here');
+              return;
+            }
+          }
+          res.send('No package has been found');
+        },
+        function(err) {
+          res.send(err);
+        }
+      );
+  });
+});
+
 app.post('/api/whenwas', function(req, res) {
 
 });
@@ -76,19 +101,19 @@ app.post('/api/add',function(req, res) {
     });
   }
 });
-function getNewPicture() {
-  function update(err, data) {
-    if(data) {
-      client.face.person.update(data, new Date().getTime()).then(response => {
-        console.log(response);
-      }).catch(err => {
-        console.log(err);
-      })
-    }
-  }
-  whoIs(update);
-}
-setInterval(getNewPicture, 10000);
+// function getNewPicture() {
+//   function update(err, data) {
+//     if(data) {
+//       client.face.person.update(data, new Date().getTime()).then(response => {
+//         console.log(response);
+//       }).catch(err => {
+//         console.log(err);
+//       })
+//     }
+//   }
+//   whoIs(update);
+// }
+// setInterval(getNewPicture, 10000);
 
 function takePicture(callback) {
   var child = exec('java -cp ./src/java/ CamWork', {cwd: './'}, function(err, stdout, stderr) {
