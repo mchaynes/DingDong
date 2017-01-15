@@ -35,7 +35,11 @@ app.get('/api/whois', function(req, res) {
       return;
     }
     client.face.person.get(personGroup, match).then((response) => {
-      res.send('A match for ' + response.name + ' has been found');
+      var name = response.name;
+      if (name === 'in') {
+        name = 'Ian';
+      }
+      res.send('A match for ' + name + ' has been found');
     }).catch((err) => {
       res.send(err.message);
     });
@@ -80,11 +84,13 @@ app.post('/api/whenwas', function(req, res) {
   name = req.body.name;
   client.face.person.list(personGroup).then((response) => {
     for(i in response) {
-      if(response[0].name == name) {
+      if(response[0].name == name || (name == 'Ian' && response[0].name == 'Tits')) {
         var date = Date.parse(response[0].userData);
-        res.send(date);
+        res.send(date+'');
+        return;
       }
     }
+    res.send('Person not found');
   })
 });
 
@@ -109,7 +115,6 @@ app.post('/api/add',function(req, res) {
     });
   }
 });
-<<<<<<< HEAD
 function getNewPicture() {
   function update(err, data) {
     if(data) {
