@@ -15,7 +15,7 @@ var app = express();
 var SITE_URL = "http://dingdong.localtunnel.me/";
 
 var faceListID = 'list';
-var personGroup = 'person_group'
+var personGroup = 'person_group';
 app.use(bodyParser());
 app.use(express.static('public'));
 
@@ -52,7 +52,15 @@ app.get('/api/what', function(req, res) {
 });
 
 app.post('/api/whenwas', function(req, res) {
-
+  name = req.body.name;
+  client.face.person.list(personGroup).then((response) => {
+    for(i in response) {
+      if(response[0].name == name) {
+        var date = Date.parse(response[0].userData);
+        res.send(date);
+      }
+    }
+  })
 });
 
 app.post('/api/add',function(req, res) {
@@ -60,7 +68,7 @@ app.post('/api/add',function(req, res) {
   var name = req.body.name;
   takePicture(addPerson);
   function addPerson(imagePath) {
-    client.face.person.create(personGroup, name, JSON.stringify('[' + new Date().getTime() + ']')).then(response => {
+    client.face.person.create(personGroup, name, JSON.stringify(new Date().getTime())).then(response => {
         client.face.person.addFace(personGroup, response.personId, {url:imagePath}).then(response => {
           client.face.personGroup.trainingStart(personGroup).then(() => {
             res.sendStatus(200);
@@ -88,7 +96,7 @@ function getNewPicture() {
   }
   whoIs(update);
 }
-setInterval(getNewPicture, 10000);
+setInterval(getNewPicture, 300000);
 
 function takePicture(callback) {
   var child = exec('java -cp ./src/java/ CamWork', {cwd: './'}, function(err, stdout, stderr) {

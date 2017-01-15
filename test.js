@@ -6,8 +6,12 @@ var faceListID = 'list';
 var personGroup = 'person_group'
 
 
-client.face.person.update(, 'Ian', new Date().getTime()).then(response => {
-  console.log(response);
+name = 'in';
+client.face.person.list(personGroup).then((response) => {
+  for(i in response) {
+    console.log(response[i].name + "      " + response[i].userData);
+    client.face.person.update(personGroup, response[i].personId, response[i].name, "TEST!");
+  }
 }).catch(err => {
   console.log(err);
-})
+});
