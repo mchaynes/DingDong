@@ -20,7 +20,9 @@ public class CamWork {
         Webcam webcam = Webcam.getDefault();
         webcam.setViewSize(new Dimension(640, 480));
         webcam.open();
-        ImageIO.write(webcam.getImage(), "JPG", new File("public/" + System.currentTimeMillis() + ".jpg"));
+        String fileName = System.currentTimeMillis() + ".jpg";
+        System.out.println(fileName);
+        ImageIO.write(webcam.getImage(), "JPG", new File("public/" + fileName));
         webcam.close();
     }
 }
