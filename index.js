@@ -144,7 +144,7 @@ function getNewPicture() {
       })
   });
 }
-setInterval(getNewPicture, 30000);
+setInterval(getNewPicture, 60000);
 
 function addPerson(name, imagePath, callback) {
   visionClient.vision.analyzeImage({url: imagePath, Description: true}).then((data) => {
