@@ -15,12 +15,14 @@ var app = express();
 var faceListID = 'list';
 var personGroup = 'person_group'
 app.use(bodyParser());
+app.use(express.static('public'));
 
 app.get('/api/whowas', function(req, res) {
 });
 
 app.get('/api/whois', function(req, res) {
   takePicture((result) => {
+    console.log(client.face.similar);
     res.send(result);
   });
 });
